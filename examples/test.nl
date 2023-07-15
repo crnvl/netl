@@ -1,8 +1,4 @@
-let num_var = 1;
-let string_var = "Hello World!";
+let num1 = 9;
+let num2 = 2;
 
-print(num_var);
-print(string_var);
-
-num_var = string_var;
-print(num_var);
+print(num1 % num2);

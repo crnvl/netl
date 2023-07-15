@@ -57,6 +57,10 @@ impl Interpreter {
         match operator {
             Token::Plus => self.evaluate_addition(left, right),
             Token::Minus => self.evaluate_subtraction(left, right),
+            Token::Asterisk => self.evaluate_multiplication(left, right),
+            Token::Slash => self.evaluate_division(left, right),
+            Token::Modulo => self.evaluate_modulo(left, right),
+            Token::Equal => self.evaluate_equal(left, right),
             Token::NotEqual => self.evaluate_not_equal(left, right),
             _ => panic!("Unexpected operator: {:?}", operator),
         }
@@ -77,6 +81,46 @@ impl Interpreter {
                 ASTNode::Number(left_value - right_value)
             }
             _ => panic!("Cannot subtract {:?} and {:?}", left, right),
+        }
+    }
+
+    fn evaluate_multiplication(&mut self, left: ASTNode, right: ASTNode) -> ASTNode {
+        match (left.clone(), right.clone()) {
+            (ASTNode::Number(left_value), ASTNode::Number(right_value)) => {
+                ASTNode::Number(left_value * right_value)
+            }
+            _ => panic!("Cannot multiply {:?} and {:?}", left, right),
+        }
+    }
+
+    fn evaluate_division(&mut self, left: ASTNode, right: ASTNode) -> ASTNode {
+        match (left.clone(), right.clone()) {
+            (ASTNode::Number(left_value), ASTNode::Number(right_value)) => {
+                ASTNode::Number(left_value / right_value)
+            }
+            _ => panic!("Cannot divide {:?} and {:?}", left, right),
+        }
+    }
+
+    fn evaluate_modulo(&mut self, left: ASTNode, right: ASTNode) -> ASTNode {
+        match (left.clone(), right.clone()) {
+            (ASTNode::Number(left_value), ASTNode::Number(right_value)) => {
+                ASTNode::Number(left_value % right_value)
+            }
+            _ => panic!("Cannot modulo {:?} and {:?}", left, right),
+        }
+    }
+
+    fn evaluate_equal(&mut self, left: ASTNode, right: ASTNode) -> ASTNode {
+        match (left.clone(), right.clone()) {
+            (ASTNode::Number(left_value), ASTNode::Number(right_value)) => {
+                if left_value == right_value {
+                    ASTNode::Number(1)
+                } else {
+                    ASTNode::Number(0)
+                }
+            }
+            _ => panic!("Cannot compare {:?} and {:?}", left, right),
         }
     }
 

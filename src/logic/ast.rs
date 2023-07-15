@@ -5,6 +5,9 @@ pub enum Token {
     NotEqual,
     Plus,
     Minus,
+    Asterisk,
+    Slash,
+    Modulo,
     Identifier(String),
     Number(i32),
     StringLiteral(String),
@@ -89,7 +92,11 @@ impl Parser {
 
         while self.current_token() == Token::Plus
             || self.current_token() == Token::Minus
+            || self.current_token() == Token::Equal
             || self.current_token() == Token::NotEqual
+            || self.current_token() == Token::Asterisk
+            || self.current_token() == Token::Slash
+            || self.current_token() == Token::Modulo
         {
             let operator = self.current_token();
             self.next_token()?;

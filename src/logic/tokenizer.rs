@@ -8,6 +8,19 @@ pub fn tokenize(code: &str) -> Vec<Token> {
         match ch {
             ' ' | '\t' | '\n' | '\r' => continue,
             '=' => tokens.push(Token::Equal),
+            '!' => {
+                if let Some(&'=') = iter.peek() {
+                    iter.next();
+                    tokens.push(Token::NotEqual);
+                } else {
+                    tokens.push(Token::Unknown);
+                }
+            }
+            '+' => tokens.push(Token::Plus),
+            '-' => tokens.push(Token::Minus),
+            '*' => tokens.push(Token::Asterisk),
+            '/' => tokens.push(Token::Slash),
+            '%' => tokens.push(Token::Modulo),
             '(' => tokens.push(Token::LeftParenthesis),
             ')' => tokens.push(Token::RightParenthesis),
             ';' => tokens.push(Token::SemiColon),
