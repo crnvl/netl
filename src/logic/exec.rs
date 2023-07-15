@@ -30,6 +30,24 @@ impl Interpreter {
                 let evaluated_expression = self.evaluate_expression(*expression);
                 println!("{}", self.stringify_value(evaluated_expression));
             }
+            ASTNode::If(expression, statements) => {
+                if self.evaluate_expression(*expression.clone()) == ASTNode::Number(1) {
+                    for statement in statements.iter() {
+                        self.interpret(*statement.clone());
+                    }
+                }
+            }
+            ASTNode::IfElse(expression, if_statements, else_statements) => {
+                if self.evaluate_expression(*expression.clone()) == ASTNode::Number(1) {
+                    for statement in if_statements.iter() {
+                        self.interpret(*statement.clone());
+                    }
+                } else {
+                    for statement in else_statements.iter() {
+                        self.interpret(*statement.clone());
+                    }
+                }
+            }
             _ => panic!("Unexpected AST node: {:?}", ast),
         }
     }
@@ -62,7 +80,35 @@ impl Interpreter {
             Token::Modulo => self.evaluate_modulo(left, right),
             Token::Equal => self.evaluate_equal(left, right),
             Token::NotEqual => self.evaluate_not_equal(left, right),
+            Token::LessThan => self.evaluate_less_than(left, right),
+            Token::GreaterThan => self.evaluate_greater_than(left, right),
             _ => panic!("Unexpected operator: {:?}", operator),
+        }
+    }
+
+    fn evaluate_less_than(&mut self, left: ASTNode, right: ASTNode) -> ASTNode {
+        match (left.clone(), right.clone()) {
+            (ASTNode::Number(left_value), ASTNode::Number(right_value)) => {
+                if left_value < right_value {
+                    ASTNode::Number(1)
+                } else {
+                    ASTNode::Number(0)
+                }
+            }
+            _ => panic!("Cannot compare {:?} and {:?}", left, right),
+        }
+    }
+
+    fn evaluate_greater_than(&mut self, left: ASTNode, right: ASTNode) -> ASTNode {
+        match (left.clone(), right.clone()) {
+            (ASTNode::Number(left_value), ASTNode::Number(right_value)) => {
+                if left_value > right_value {
+                    ASTNode::Number(1)
+                } else {
+                    ASTNode::Number(0)
+                }
+            }
+            _ => panic!("Cannot compare {:?} and {:?}", left, right),
         }
     }
 
@@ -70,6 +116,15 @@ impl Interpreter {
         match (left.clone(), right.clone()) {
             (ASTNode::Number(left_value), ASTNode::Number(right_value)) => {
                 ASTNode::Number(left_value + right_value)
+            }
+            (ASTNode::StringLiteral(left_value), ASTNode::StringLiteral(right_value)) => {
+                ASTNode::StringLiteral(format!("{}{}", left_value, right_value))
+            }
+            (ASTNode::StringLiteral(left_value), ASTNode::Number(right_value)) => {
+                ASTNode::StringLiteral(format!("{}{}", left_value, right_value))
+            }
+            (ASTNode::Number(left_value), ASTNode::StringLiteral(right_value)) => {
+                ASTNode::StringLiteral(format!("{}{}", left_value, right_value))
             }
             _ => panic!("Cannot add {:?} and {:?}", left, right),
         }

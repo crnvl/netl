@@ -23,7 +23,14 @@ pub fn tokenize(code: &str) -> Vec<Token> {
             '%' => tokens.push(Token::Modulo),
             '(' => tokens.push(Token::LeftParenthesis),
             ')' => tokens.push(Token::RightParenthesis),
+            '{' => tokens.push(Token::LeftBrace),
+            '}' => tokens.push(Token::RightBrace),
+            '[' => tokens.push(Token::LeftBracket),
+            ']' => tokens.push(Token::RightBracket),
+            '<' => tokens.push(Token::LessThan),
+            '>' => tokens.push(Token::GreaterThan),
             ';' => tokens.push(Token::SemiColon),
+            ',' => tokens.push(Token::Comma),
             '"' => {
                 let mut string_literal = String::new();
                 while let Some(ch) = iter.next() {
@@ -51,6 +58,10 @@ pub fn tokenize(code: &str) -> Vec<Token> {
                 match identifier.as_str() {
                     "let" => tokens.push(Token::Let),
                     "print" => tokens.push(Token::Print),
+                    "fn" => tokens.push(Token::Fn),
+                    "if" => tokens.push(Token::If),
+                    "else" => tokens.push(Token::Else),
+                    "elif" => tokens.push(Token::IfElse),
                     _ => tokens.push(Token::Identifier(identifier)),
                 }
             }
